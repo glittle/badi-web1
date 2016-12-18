@@ -13,7 +13,7 @@ function BasePage() {
 
     function startTimerTest() {
 
-        settings.timer = setInterval(doInterval, 5000);
+        settings.timer = setInterval(doInterval, 50);
     }
 
     function doInterval() {
@@ -30,7 +30,9 @@ function BasePage() {
                 swTime: new Date().toString(),
                 message: '',
                 log: '',
-                test1: ''
+                test1: '',
+                nameI: 16,
+                nameNum: 5
             },
             ready: function () {
                 document.addEventListener('change', this.docChange)
@@ -42,12 +44,17 @@ function BasePage() {
                 notifyNow: function (ev) {
                     notifyNow();
                 },
-                icon: function (size) {
-                    return myPage.draw('Questions', 19, 'center', size)
+            },
+            computed: {
+                icon2: function () {
+                    return myPage.draw(names[this.nameI], this.nameNum, 'center', 96)
                 }
             }
         })
     }
+
+    var nameSet = "Ayyám-i-Há,Bahá,Jalál,Jamál,`Aẓamat,Núr,Rahmat,Kalimát,Kamál,Asmá’,`Izzat,Mas\u0332h\u0332íyyat,`Ilm,Qudrat,Qawl,Masá'il,S\u0332h\u0332araf,Sulṭán,Mulk,`Alá’";
+    var names = nameSet.split(',');
 
     function notifyNow() {
         notify('Questions 8 ⇨ 4:30pm', 'Today!!!', 'Questions', 8, false)
@@ -110,33 +117,34 @@ function BasePage() {
         var canvas = document.createElement('canvas');
         canvas.width = size;
         canvas.height = size;
-
+        console.log('drawing new image')
         var context = canvas.getContext('2d');
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        var fontName = 'Roboto';
+        var fontName = 'Roboto, sans-serif';
 
         context.fillStyle = getStorage('iconTextColor', 'black');
+
+        //http://tutorials.jenkov.com/html5-canvas/text.html
 
         var fontBasis = size * .9;
 
         var fontSize = fontBasis / 1.9;
-        var vOffset = fontSize * .27;
+        var vOffset = fontSize * .3;
         context.font = `${fontSize}px ${fontName}`;
-        context.fillText(line1, 0, fontSize - vOffset);
+        context.textBaseline = 'hanging';
+        context.fillText(line1, -2, 0);
 
-        fontSize = fontBasis / 1.35;
+        fontSize = fontBasis / 1.2;
         //vOffset = fontSize * .05;
         context.font = `bold ${fontSize}px ${fontName}`;
         context.textAlign = line2Alignment;
+        context.textBaseline = 'alphabetic';
         var x = 0;
         switch (line2Alignment) {
             case 'center':
                 x = size / 2;
                 break;
-                //    case 'end':
-                //      x = size;
-                //      break;
         }
         context.fillText(line2, x, size);
 
@@ -144,7 +152,7 @@ function BasePage() {
         return canvas.toDataURL();
     }
 
-    function drawLargeIcon(number){
+    function drawLargeIcon(number) {
 
     }
 

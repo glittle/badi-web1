@@ -1,3 +1,5 @@
+var loadWorkers = false;
+
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('message', function (event) {
         var payload = event.data;
@@ -18,17 +20,10 @@ if ('serviceWorker' in navigator) {
         // event.ports[0].postMessage("Client 1 Says 'Hello back!'");
     });
 
-
-    window.addEventListener('load', function () {
-        console.log('loading 1')
-        navigator.serviceWorker.register('/sw1.js').then(function (registration) {
-            console.log('ServiceWorker 1 registration successful with scope: ', registration.scope);
-        }).catch(function (err) {
-            console.log('ServiceWorker 1 registration failed: ', err);
-        });
-
-        console.log('loading 2')
-        navigator.serviceWorker.register('/sw2.js').then(function (registration) {
+    if (loadWorkers) {
+        navigator.serviceWorker.register('/sw2.js', {
+            scope: '/'
+        }).then(function (registration) {
             console.log('ServiceWorker 2 registration successful with scope: ', registration.scope);
 
             if (navigator.serviceWorker.controller) {
@@ -42,9 +37,63 @@ if ('serviceWorker' in navigator) {
         }).catch(function (err) {
             console.log('ServiceWorker 2 registration failed: ', err);
         });
-    });
 
 
+        navigator.serviceWorker.register('/sw4.js', {
+                scope: '/'
+            })
+            // Wait until the service worker is active.
+            .then(function (registration) {
+                console.log('ServiceWorker 4 registration successful with scope: ', registration.scope);
+                return navigator.serviceWorker.ready;
+            })
+            // ...and then show the interface for the commands once it's ready.
+            .catch(function (error) {
+                // Something went wrong during registration. The service-worker.js file
+                // might be unavailable or contain a syntax error.
+                console.log(error);
+            });
+    }
+    // navigator.serviceWorker.register('/sw3.js')
+    //     .then(function (registration) {
+    //         console.log('ServiceWorker 3 registration successful with scope: ', registration.scope);
+
+    //         // Registration was successful. Now, check to see whether the service worker is controlling the page.
+    //         if (navigator.serviceWorker.controller) {
+    //             // If .controller is set, then this page is being actively controlled by the service worker.
+    //             document.querySelector('#status').textContent = 'The service worker is currently handling network operations. ' +
+    //                 'If you reload the page, the images (and everything else) will be served from the service worker\'s cache.';
+    //         } else {
+    //             // If .controller isn't set, then prompt the user to reload the page so that the service worker can take
+    //             // control. Until that happens, the service worker's fetch handler won't be used.
+    //             document.querySelector('#status').textContent = 'Please reload this page to allow the service worker to handle network operations.';
+    //         }
+    //     }).catch(function (error) {
+    //         // Something went wrong during registration. The service-worker.js file
+    //         // might be unavailable or contain a syntax error.
+    //         document.querySelector('#status').textContent = error;
+    //     });
+
+
+
+
+    // window.addEventListener('load', function () {
+    // console.log('loading 1')
+    // navigator.serviceWorker.register('/sw1.js').then(function (registration) {
+    //     console.log('ServiceWorker 1 registration successful with scope: ', registration.scope);
+    // }).catch(function (err) {
+    //     console.log('ServiceWorker 1 registration failed: ', err);
+    // });
+
+    // console.log('loading 2')
+    // });
+} else {
+    // The current browser doesn't support service workers.
+    var aElement = document.createElement('a');
+    //TODO - integrate message
+    aElement.href = 'http://www.chromium.org/blink/serviceworker/service-worker-faq';
+    aElement.textContent = 'Service workers are not supported in the current browser.';
+    document.querySelector('#status').appendChild(aElement);
 }
 
 var swHandler = {
