@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Wondrous-Badí Calendar</title>
+    <meta name="description" content="Tools and services for the Wondrous-Badí Calendar.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#FF8B3B">
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    <link rel="stylesheet" href="index.css" type="text/css">
+    <link rel="icon" type="image/png" href="/images/badiIcon32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/images/badiIcon16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="canonical" href="https://wondrous-badi.ga/" />
+    <link rel='shortlink' href='https://wondrous-badi.ga/' />
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <p>{{loadTime}} - load time</p>
+        <p>{{updateTime}} - immediate js update</p>
+        <p>{{swTime}} - sw js update</p>
+        <p>{{message}}</p>
+        <p><button v-on:click="notifyNow">Test notification</button></p>
+        <img v-bind:src="icon(32)">
+        <img v-bind:src="icon(96)">
+        <img v-bind:src="icon(192)">
+    </div>
+    <script type="text/javascript" src="sw-setup.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+</body>
+
+</html>
