@@ -28,9 +28,17 @@ function BasePage() {
                 loadTime: new Date().toString(),
                 updateTime: new Date().toString(),
                 swTime: new Date().toString(),
-                message: ''
+                message: '',
+                log: '',
+                test1: ''
+            },
+            ready: function () {
+                document.addEventListener('change', this.docChange)
             },
             methods: {
+                docChange: function () {
+                    test1 = screen.orientation;
+                },
                 notifyNow: function (ev) {
                     notifyNow();
                 },
@@ -42,27 +50,28 @@ function BasePage() {
     }
 
     function notifyNow() {
-       notify('Questions 8 ⇨ 4:30pm', 'Today!!!', 'Questions', 8)
+        notify('Questions 8 ⇨ 4:30pm', 'Today!!!', 'Questions', 8, false)
     }
 
-    var notify = function (note1, note2, icon1, icon2) {
+    var notify = function (note1, note2, icon1, icon2, makeSound) {
         // Check for notification compatibility.
         if (!'Notification' in window) {
             // If the browser version is unsupported, remain silent.
             return;
         }
         // Log current permission level
-        console.log(Notification.permission);
         // If the user has not been asked to grant or deny notifications
         // from this domain...
         if (Notification.permission === 'default') {
+            console.log('asking for permission to notify');
             Notification.requestPermission(function () {
                 // ...callback this function once a permission level has been set.
-                notify();
+                notify(note1, note2, icon1, icon2, makeSound);
             });
         }
         // If the user has granted permission for this domain to send notifications...
         else if (Notification.permission === 'granted') {
+            console.log('showing notification', note1)
             navigator.serviceWorker.ready.then(function (registration) {
                 var n = registration.showNotification(note1, {
                     body: note2,
@@ -72,13 +81,14 @@ function BasePage() {
                     //badge: '/images/19.png',
                     badge: draw(icon1, icon2, 'center', 128),
                     tag: 'badi',
-                    silent: false,
+                    silent: !makeSound,
                     renotify: true,
                     requireInteraction: true
                 });
                 // Remove the notification from Notification Center when clicked.
                 n.onclick = function () {
                     console.log('Notification clicked');
+                    registration.cl
                     this.close();
                 };
                 // Callback function when the notification is closed.
@@ -111,12 +121,12 @@ function BasePage() {
         var fontBasis = size * .9;
 
         var fontSize = fontBasis / 1.9;
-        var vOffset = fontSize * .25;
+        var vOffset = fontSize * .27;
         context.font = `${fontSize}px ${fontName}`;
         context.fillText(line1, 0, fontSize - vOffset);
 
-        fontSize = fontBasis / 1.4;
-        vOffset = fontSize * .05;
+        fontSize = fontBasis / 1.35;
+        //vOffset = fontSize * .05;
         context.font = `bold ${fontSize}px ${fontName}`;
         context.textAlign = line2Alignment;
         var x = 0;
@@ -128,11 +138,16 @@ function BasePage() {
                 //      x = size;
                 //      break;
         }
-        context.fillText(line2, x, size - vOffset);
+        context.fillText(line2, x, size);
 
         // return context.getImageData(0, 0, size, size);
         return canvas.toDataURL();
     }
+
+    function drawLargeIcon(number){
+
+    }
+
 
     function getStorage(x, y) {
         return y;

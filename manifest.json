@@ -2,7 +2,7 @@
   "name": "Wondrous-Badí Calendar",
   "short_name": "Wondrous-Badí",
   "description": "Tools and services for the Wondrous-Badí Calendar.",
-  "start_url": "/index.html",
+  "start_url": "/",
   "icons": [
     {
       "src": "/images/badiIcon192.png",
@@ -18,5 +18,5 @@
   "theme_color": "#FF8B3B",
   "background_color": "#FF8B3B",
   "display": "standalone",
-  "orientation": "natural"
+  "orientation": "any"
 }

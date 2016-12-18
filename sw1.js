@@ -1,63 +1,6 @@
 'use strict';
-
-
-
-addEventListener('message', function (event) {
-    var msg = event.data;
-    console.log('incoming to sw:', msg)
-    event.ports[0].postMessage({
-        'test': 'This is my response from the sw for: ' + msg.q
-    });
-});
-
-function send_message_to_all_clients(msg) {
-    // http://craig-russell.co.uk/2016/01/29/service-worker-messaging.html
-    console.log('sending to clients');
-    clients.matchAll().then(clients => {
-        clients.forEach(client => {
-            send_message_to_client(client, msg).then(m => console.log("SW Received Message: " + m));
-        })
-    })
-}
-
-function send_message_to_client(client, payload) {
-    return new Promise(function (resolve, reject) {
-        var msg_chan = new MessageChannel();
-
-        msg_chan.port1.onmessage = function (event) {
-            if (event.data.error) {
-                reject(event.data.error);
-            } else {
-                resolve(event.data);
-            }
-        };
-
-        client.postMessage(payload, [msg_chan.port2]);
-    });
-}
-
-var x = 0;
-setInterval(function(){
-        send_message_to_all_clients({
-            type: 'x',
-            text: 'SW reporting for duty! - ' + ++x
-        });
-}, 2000);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const swWho = 'sw1';
+importScripts('swHelper.js');
 
 // adapted from cloudfour.com -- thanks!
 const version = '0.0.1';
@@ -138,13 +81,7 @@ const fallbacks = new Map([
  * The whitelist of URL hosts to handle for a fetch event.
  */
 const hosts = [
-    'localhost',
-    'cloudfour.com',
-    'php.cloudfour.test',
-    'cdn.polyfill.io',
-    'c4site.staging.wpengine.com',
-    'cdn.cloudfour.com',
-    '29comwzoq712ml5vj5gf479x-wpengine.netdna-ssl.com' // legacy
+    'localhost'
 ];
 
 /**
@@ -152,8 +89,6 @@ const hosts = [
  * Including: WordPress admin pages, preview posts, etc.
  */
 const exclusions = [
-    /\/wp-admin/,
-    /\/wp-login/,
     /preview=true/
 ];
 
@@ -371,8 +306,8 @@ addEventListener('install', event => {
 addEventListener('activate', event => {
     deleteCaches(name => name !== cacheName);
 
-    console.log('send to all')
-    send_message_to_all_clients('SW reporting for duty!')
+    // console.log('send to all')
+    send_message_to_all_clients('SW 1 reporting for duty!')
 
     return event.waitUntil(
         clients.claim()
@@ -382,12 +317,13 @@ addEventListener('activate', event => {
 var timer = null;
 
 function startTimerTests() {
-    console.log('sw timer started')
+    // console.log('sw timer started')
     timer = setInterval(doTime, 2000);
 }
 
+var x = 0;
 function doTime() {
-    console.log('sw interval timer');
+     console.log('sw interval timer', ++x);
 
 }
 
@@ -437,7 +373,7 @@ function logCached(request, ...details) {
 function logEvent(event) {
     let label = event.type;
     let details = [label, event];
-    switch (event.type) {
+    switch (event.type) { 
         case 'fetch':
             label += ` ${event.request.url}`;
             details.push(event.request);
@@ -446,8 +382,13 @@ function logEvent(event) {
             break;
     }
     //   console.groupCollapsed(label);
-    console.log(details);
-    //   console.groupEnd();
+    var payload = {
+        type: 'log',
+        text: label.toString()
+    }
+
+    console.log(payload);
+    send_message_to_all_clients(payload);
 }
 
 [
