@@ -19,9 +19,14 @@
 
 // Version 0.57
 
+
+
+// from airhorner
+// this unconditionally loads from cache
+// almost impossible to "uninstall", since the browser remembers the SW
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open('airhorner').then(cache => {
+    caches.open('badiWeb4').then(cache => {
       return cache.addAll([
         '/',
         '/index.html',

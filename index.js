@@ -9,7 +9,28 @@ function BasePage() {
         connectVue();
         startTimerTest();
         notifyNow();
+        app.status = navigator.onLine ? '' : 'offline';
+
+        // testAlarms();
     }
+
+    function testAlarms() {
+        console.log('test alarm 1')
+        var soon = new Date();
+        soon.setSeconds(soon.getSeconds() + 70)
+
+        chrome.alarms.create('alarm1', {
+            when: soon.getTime()
+        });
+
+        chrome.alarms.clearAll();
+        chrome.alarms.onAlarm.addListener(alarmHandler);
+        console.log('test alarm 2')
+    }
+
+    var alarmHandler = function (alarm) {
+        console.log(alarm.name);
+    };
 
     function startTimerTest() {
 
@@ -28,11 +49,13 @@ function BasePage() {
                 loadTime: new Date().toString(),
                 updateTime: new Date().toString(),
                 swTime: new Date().toString(),
-                message: '',
+                messageA: '',
+                messageB: '',
                 log: '',
                 test1: '',
                 nameI: 16,
-                nameNum: 5
+                nameNum: 5,
+                status: ''
             },
             ready: function () {
                 document.addEventListener('change', this.docChange)
@@ -43,7 +66,7 @@ function BasePage() {
                 },
                 notifyNow: function (ev) {
                     notifyNow();
-                },
+                }
             },
             computed: {
                 icon2: function () {
@@ -57,7 +80,7 @@ function BasePage() {
     var names = nameSet.split(',');
 
     function notifyNow() {
-        notify('Questions 8 ⇨ 4:30pm', 'Today!!!', 'Questions', 8, false)
+        notify('Questions 9 ⇨ 4:30pm', 'Today!!!', 'Questions', 9, false)
     }
 
     var notify = function (note1, note2, icon1, icon2, makeSound) {
@@ -161,6 +184,12 @@ function BasePage() {
         return y;
     }
 
+    updateOnlineStatus = function (ev) {
+        app.status = ev.type;
+    }
+    window.addEventListener('offline', updateOnlineStatus);
+    window.addEventListener('online', updateOnlineStatus);
+
     return {
         start: startPage,
         draw: draw
@@ -173,3 +202,30 @@ var myPage = BasePage();
 document.addEventListener("DOMContentLoaded", function () {
     myPage.start();
 });
+
+var OneSignal = window.OneSignal || [];
+OneSignal.push(["init", {
+    appId: "2b535ce7-1ca1-4950-813f-2d89c9f281c2",
+    autoRegister: false,
+    notifyButton: {
+        enable: false
+    },
+    welcomeNotification: {
+        message: 'You are ready for notifications!'
+    },
+    safari_web_id: 'web.onesignal.auto.2c31ff0c-1624-4aec-8f89-a4f0b1da0ea1'
+}]);
+
+(function (i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+ga('create', 'UA-1312528-11', 'auto');
+ga('send', 'pageview');

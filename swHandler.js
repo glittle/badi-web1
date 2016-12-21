@@ -1,17 +1,20 @@
-var loadWorkers = false;
+var loadCacher = true;
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('message', function (event) {
         var payload = event.data;
         switch (payload.type) {
-            case 'pulse':
-                app.message = payload.text;
+            case 'pulseA':
+                app.messageA = payload.text;
+                break;
+            case 'pulseB':
+                app.messageB = payload.text;
                 break;
             case 'log':
-                console.log('incoming from a sw:', payload)
-                console.log(app.log)
-                app.log = [app.log || '', payload.text].join('\n');
-                console.log(app.log)
+                // console.log('incoming from a sw:', payload)
+                // console.log(app.log)
+                app.log = [app.log, payload.text].join('<br>');
+                // console.log(app.log)
                 break;
             default:
                 console.log('incoming from a sw:', payload)
@@ -20,40 +23,39 @@ if ('serviceWorker' in navigator) {
         // event.ports[0].postMessage("Client 1 Says 'Hello back!'");
     });
 
-    if (loadWorkers) {
-        navigator.serviceWorker.register('/sw2.js', {
+    //  if (loadCacher) {
+    navigator.serviceWorker.register('/sw6.js', {
             scope: '/'
         }).then(function (registration) {
-            console.log('ServiceWorker 2 registration successful with scope: ', registration.scope);
-
-            if (navigator.serviceWorker.controller) {
-                swHandler.sendMessage({
-                    q: 'hello sw?',
-                    type: 123
-                }).then(function (reply) {
-                    console.log('The reply is: ', reply)
-                });
-            }
-        }).catch(function (err) {
-            console.log('ServiceWorker 2 registration failed: ', err);
+            console.log('ServiceWorker 6 registration successful with scope: ', registration.scope);
+            return navigator.serviceWorker.ready;
+        })
+        .catch(function (error) {
+            // Something went wrong during registration. The service-worker.js file
+            // might be unavailable or contain a syntax error.
+            console.log(error);
         });
+    //    }
+
+    // navigator.serviceWorker.register('/sw2.js', {
+    //     scope: '/'
+    // }).then(function (registration) {
+    //     console.log('ServiceWorker 2 registration successful with scope: ', registration.scope);
+
+    //     // if (navigator.serviceWorker.controller) {
+    //     //     swHandler.sendMessage({
+    //     //         q: 'hello sw?',
+    //     //         type: 123
+    //     //     }).then(function (reply) {
+    //     //         console.log('The reply is: ', reply)
+    //     //     });
+    //     // }
+    //     return navigator.serviceWorker.ready;
+    // }).catch(function (err) {
+    //     console.log('ServiceWorker 2 registration failed: ', err);
+    // });
 
 
-        navigator.serviceWorker.register('/sw4.js', {
-                scope: '/'
-            })
-            // Wait until the service worker is active.
-            .then(function (registration) {
-                console.log('ServiceWorker 4 registration successful with scope: ', registration.scope);
-                return navigator.serviceWorker.ready;
-            })
-            // ...and then show the interface for the commands once it's ready.
-            .catch(function (error) {
-                // Something went wrong during registration. The service-worker.js file
-                // might be unavailable or contain a syntax error.
-                console.log(error);
-            });
-    }
     // navigator.serviceWorker.register('/sw3.js')
     //     .then(function (registration) {
     //         console.log('ServiceWorker 3 registration successful with scope: ', registration.scope);

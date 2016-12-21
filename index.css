@@ -6,3 +6,12 @@ img {
   box-sizing: border-box;
   margin: 5px;
 }
+.log {
+  border: 3px inset grey;
+  max-height: 400px;
+  white-space: nowrap;
+  overflow: scroll;
+}
+#status {
+  color: red;
+}

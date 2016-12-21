@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <title>Wondrous-Badí Calendar</title>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="index.css" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <meta name="description" content="Tools and services for the Wondrous-Badí Calendar.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#FF8B3B">
@@ -18,8 +21,6 @@
     <link rel=apple-touch-icon href=/images/badiIcon192.png>
     <link rel="canonical" href="https://wondrous-badi.ga/" />
     <link rel='shortlink' href='https://wondrous-badi.ga/' />
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="index.css" type="text/css">
     <meta name='twitter:card' content='summary'>
     <meta name='twitter:url' content='https://wondrous-badi.ga/'>
     <meta name='twitter:creator' content='@glenlittle'>
@@ -28,19 +29,21 @@
     <meta name="twitter:description" content="Tools for the Wondrous-Badí Calendar. 
     With special features when viewed on your Android phone!" />
     <meta name="twitter:image" content="https://wondrous-badi.ga/images/badiIcon192.png" />
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async></script>
 </head>
 
 <body>
-    <h1>Testing the Wondrous-Badí site</h1>
-    <div id=status></div>
+    <h1>Testing the Wondrous-Badí site 2</h1>
     <div id="app" v-cloak>
+        <div id=status>{{status}}</div>
         <p>{{loadTime}} - load time</p>
         <p>{{updateTime}} - immediate js update</p>
         <p>{{swTime}} - sw js update</p>
         <p>Test1: {{test1}}</p>
-        <p>Message: {{message}}</p>
-        <p>Log: {{log}}</p>
+        <p>MessageA: {{messageA}}</p>
+        <p>MessageB: {{messageB}}</p>
         <p><button v-on:click="notifyNow">Test notification</button></p>
+        <p v-html="log" class=log>Log</p>
         <input type=range min=0 max=19 v-model="nameI">
         <input type=range min=1 max=19 v-model="nameNum">
         <img v-bind:src="icon2">
@@ -48,21 +51,6 @@
     <script type="text/javascript" src="swHandler.js"></script>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="index.js"></script>
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r;
-            i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date();
-            a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
-            a.async = 1;
-            a.src = g;
-            m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-        ga('create', 'UA-1312528-11', 'auto');
-        ga('send', 'pageview');
-    </script>
 </body>
 
 </html>

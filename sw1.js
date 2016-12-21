@@ -1,6 +1,6 @@
 'use strict';
 const swWho = 'sw1';
-importScripts('swHelper.js');
+importScripts('sw_common.js');
 
 // adapted from cloudfour.com -- thanks!
 const version = '0.0.1';
